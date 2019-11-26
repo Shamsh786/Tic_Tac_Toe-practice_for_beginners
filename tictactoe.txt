@@ -1,0 +1,166 @@
+
+current_player = "X"
+game_continue = True
+winner = None
+
+box = ["-", "-", "-",
+         "-", "-", "-",
+         "-", "-", "-", ]
+
+
+def show_box():
+    print(box[0] + " | " + box[1] + " | " + box[2])
+    print(box[3] + " | " + box[4] + " | " + box[5])
+    print(box[6] + " | " + box[7] + " | " + box[8])
+
+
+def play_game():
+    # display initial box
+    show_box()
+
+    while game_continue:
+
+        handle_turn(current_player)
+
+        check_if_game_over()
+
+        flip_player()
+
+    # The game has Ended
+
+    if winner == "X" or winner == "O":
+        print(winner + " won.")
+    elif winner == None:
+        print("Its a Tie!")
+
+
+def handle_turn(player):
+
+    print(player + "'s turn.")
+
+    position = input("Choose a position from 1-9: ")
+
+    valid = False
+
+    while not valid:
+
+        while position not in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:
+            position = input("Choose a position from 1-9: ")
+
+        position = int(position) - 1
+
+        if box[position] == "-":
+            valid = True
+        else:
+            print("Invalid Move!")
+
+    box[position] = player
+    show_box()
+
+
+def check_if_game_over():
+    check_for_winner()
+    check_if_tie()
+
+
+def check_for_winner():
+    # Check Rows, Columns, Diagonals
+
+    global winner
+    row_winner = check_rows()
+    column_winner = check_columns()
+    diagonal_winner = check_diagonals()
+
+    if row_winner:
+        '''Win Status'''
+        winner = row_winner
+    elif column_winner:
+        '''Win Status'''
+        winner = column_winner
+    elif diagonal_winner:
+        '''Win Status'''
+        winner = diagonal_winner
+    else:
+        '''Nobody Wins'''
+        winner = None
+
+    return
+
+
+def check_rows():
+    global game_continue
+    row_1 = box[0] == box[1] == box[2] != "-"
+    row_2 = box[3] == box[4] == box[5] != "-"
+    row_3 = box[6] == box[7] == box[8] != "-"
+
+    if row_1 or row_2 or row_3:
+        game_continue = False
+
+    # Return the winner X or O
+    if row_1:
+        return box[0]
+    elif row_2:
+        return box[3]
+    elif row_3:
+        return box[6]
+    return
+
+
+def check_columns():
+    global game_continue
+    column_1 = box[0] == box[3] == box[6] != "-"
+    column_2 = box[1] == box[4] == box[7] != "-"
+    column_3 = box[2] == box[5] == box[8] != "-"
+
+    if column_1 or column_2 or column_3:
+        game_continue = False
+
+    # Return the winner X or O
+    if column_1:
+        return box[0]
+    elif column_2:
+        return box[1]
+    elif column_3:
+        return box[2]
+    return
+
+
+def check_diagonals():
+    global game_continue
+    diagonal_1 = box[0] == box[4] == box[8] != "-"
+    diagonal_2 = box[6] == box[4] == box[2] != "-"
+
+    if diagonal_1 or diagonal_2:
+        game_continue = False
+
+    # Return the winner X or O
+    if diagonal_1:
+        return box[0]
+    elif diagonal_2:
+        return box[2]
+
+    return
+
+
+def check_if_tie():
+    global game_continue
+
+    if "-" not in box:
+        game_continue = False
+
+    return
+
+
+def flip_player():
+    global current_player
+    if current_player == "X":
+        current_player = "O"
+
+    elif current_player == "O":
+        current_player = "X"
+
+    return
+
+
+play_game()
+
